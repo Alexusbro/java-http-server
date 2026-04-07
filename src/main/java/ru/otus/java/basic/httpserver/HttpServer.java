@@ -43,10 +43,9 @@ public class HttpServer {
                             HttpRequest request = new HttpRequest(rawRequest);
                             request.info(true);
                             dispatcher.execute(request, socket.getOutputStream());
-                        } catch (IOException e) {
-                            logger.error("IO exception", e);
+                        } catch (Exception e) {
+                            logger.error("Error processing request", e);
                         }
-                        ;
                     });
                 } catch (IOException e) {
                     logger.error("client disconnected", e);
