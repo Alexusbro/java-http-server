@@ -1,5 +1,7 @@
 package ru.otus.java.basic.httpserver;
 
+import ru.otus.java.basic.httpserver.app.ItemsService;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,6 +11,10 @@ public class HttpRequest {
     private String uri;
     private Map<String, String> params;
     private String body;
+
+    public String getUri() {
+        return uri;
+    }
 
     public String getBody() {
         return body;
