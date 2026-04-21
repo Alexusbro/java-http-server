@@ -1,7 +1,5 @@
 package ru.otus.java.basic.httpserver;
 
-import ru.otus.java.basic.httpserver.app.ItemsService;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,5 +59,9 @@ public class HttpRequest {
         if (method == HttpMethod.POST || method == HttpMethod.PUT) {
             body = rawRequest.substring(rawRequest.indexOf("\r\n\r\n") + 4);
         }
+    }
+
+    public int paramsSize() {
+        return params.size();
     }
 }

@@ -16,6 +16,7 @@ public class HttpResponse {
         this.output = output;
         this.status = HttpStatus.OK;
         this.contentType = CONTENT_HTML;
+        this.body = new byte[0];
     }
 
     public void setStatus(HttpStatus status) {
@@ -38,14 +39,11 @@ public class HttpResponse {
     public void send() throws IOException {
         StringBuilder header = new StringBuilder();
         header.append("HTTP/1.1 ").append(status.getCode()).append(" ").append(status.getMessage()).append("\r\n")
-              .append("Content-length: ").append(body.length).append("\r\n")
-              .append("Content-Type: ").append(contentType).append("\r\n\r\n");
+                .append("Content-length: ").append(body.length).append("\r\n")
+                .append("Content-Type: ").append(contentType).append("\r\n\r\n");
 
         output.write(header.toString().getBytes(StandardCharsets.UTF_8));
-
-        if (body != null) {
-            output.write(body);
-        }
+        output.write(body);
         output.flush();
     }
 }
