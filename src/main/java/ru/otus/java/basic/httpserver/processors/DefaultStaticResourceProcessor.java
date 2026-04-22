@@ -16,9 +16,10 @@ public class DefaultStaticResourceProcessor implements RequestProcessor{
         String filename = request.getUri().substring(1);
         Path filePath = Paths.get("static/", filename);
         byte[] fileData = Files.readAllBytes(filePath);
+        String typeFile = Files.probeContentType(filePath);
 
         HttpResponse response = new HttpResponse(output);
-        response.setBody(fileData, "file"); //разобраться со вторым параметром
+        response.setBody(fileData, typeFile);
         response.send();
 
     }
