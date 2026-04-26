@@ -1,5 +1,6 @@
 package ru.otus.java.basic.httpserver;
 
+import ru.otus.java.basic.httpserver.Exeption.ResourceNotFoundException;
 import ru.otus.java.basic.httpserver.app.ItemsService;
 import ru.otus.java.basic.httpserver.processors.*;
 
@@ -31,10 +32,10 @@ public class Dispatcher {
             defaultStaticRequestProcessor.execute(request, output);
             return;
         }
-        if (!processors.containsKey(request.getRoutingUri())) {
-            defaultNotFoundRequestProcessor.execute(request, output);
-            return;
+        RequestProcessor processor = processors.get(request.getRoutingUri());
+        if (processor != null) {
+           processor.execute(request, output);
         }
-        processors.get(request.getRoutingUri()).execute(request, output);
+        throw new ResourceNotFoundException("resource not found " + request.getUri());
     }
 }
