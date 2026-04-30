@@ -32,7 +32,7 @@ public class BookRepository {
                 ));
             }
         } catch (SQLException e) {
-            logger.warn("error get book" + e.getMessage());
+            logger.warn("error get book by id: {}", e.getMessage());
         }
         return books;
     }
@@ -42,14 +42,15 @@ public class BookRepository {
         Book book = null;
         try (PreparedStatement pstmt = dbConnection.getConnection().prepareStatement(sql)) {
             pstmt.setLong(1, id);
-            ResultSet rs = pstmt.executeQuery();
-            while (rs.next()) {
-                String author = rs.getString("author");
-                String title = rs.getString("title");
-                book = new Book(id, author, title);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    String author = rs.getString("author");
+                    String title = rs.getString("title");
+                    book = new Book(id, author, title);
+                }
             }
         } catch (SQLException e) {
-            logger.warn("failed find book by id {}", e.getMessage());
+            logger.warn("failed find book by id {}: {}", id, e.getMessage());
         }
         return book;
     }
@@ -62,7 +63,7 @@ public class BookRepository {
             pstmt.setString(2, book.getTitle());
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            logger.warn("error insert book into DB" + e.getMessage());
+            logger.warn("error insert book into DB: {}", e.getMessage());
         }
     }
 
@@ -72,7 +73,7 @@ public class BookRepository {
             pstmt.setLong(1, id);
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            logger.warn("error insert book into DB" + e.getMessage());
+            logger.warn("error insert book by id {} into DB: {}", id, e.getMessage());
         }
     }
 
@@ -84,7 +85,7 @@ public class BookRepository {
             pstmt.setLong(3, id);
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            logger.warn("error update book" + e.getMessage());
+            logger.warn("error update book by id {}: {}", id, e.getMessage());
         }
     }
 }

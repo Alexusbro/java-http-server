@@ -43,6 +43,12 @@ public class Dispatcher {
             return;
         }
 
+//        Map<String, String> processorsMethods = new HashMap<>();
+//        processors.forEach((key, valiue) -> {
+//            String[] methodUri = key.split(" ");
+//            processorsMethods.put()
+//        });
+
         RequestProcessor processor = processors.get(request.getRoutingUri());
         if (processor != null) {
            processor.execute(request, output);
