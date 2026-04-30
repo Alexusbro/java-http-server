@@ -25,9 +25,9 @@ public class PropertiesServer {
             host = properties.getProperty("server.host");
             threadPoolSize = properties.getProperty("server.thread_pool_size");
             maxRequestSize = properties.getProperty("server.max_request_size");
-            logger.info("configuration successful load");
+            logger.info("configuration for server successful load");
         } catch (IOException e) {
-            logger.warn("failed to load configuration");
+            logger.warn("failed to load configuration server");
             port = "8189";
             host = "0.0.0.0";
             threadPoolSize = "10";

@@ -5,6 +5,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.otus.java.basic.httpserver.Exeption.PayloadTooLargeException;
 import ru.otus.java.basic.httpserver.Exeption.ResourceNotFoundException;
+import ru.otus.java.basic.httpserver.db.DatabaseConnection;
+import ru.otus.java.basic.httpserver.db.PropertiesDb;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -24,16 +26,27 @@ public class HttpServer {
     private int threadPoolSize;
     private Dispatcher dispatcher;
     private PropertiesServer propertiesServer;
+    private PropertiesDb propertiesDb;
+    private String dbUrl;
+    private String dbUser;
+    private String dbPassword;
+    private DatabaseConnection dbConnection;
 
     ExecutorService threadPools;
 
     public HttpServer() {
         propertiesServer = new PropertiesServer();
         propertiesServer.setProperties();
+        propertiesDb = new PropertiesDb();
+        propertiesDb.setProperties();
         this.port = Integer.parseInt(propertiesServer.getPort());
         this.host = propertiesServer.getHost();
         this.threadPoolSize = Integer.parseInt(propertiesServer.getThreadPoolSize());
-        this.dispatcher = new Dispatcher();
+        this.dbUrl = propertiesDb.getDbUrl();
+        this.dbUser = propertiesDb.getDbUser();
+        this.dbPassword = propertiesDb.getDbPassword();
+        dbConnection = new DatabaseConnection(dbUrl, dbUser, dbPassword);
+        this.dispatcher = new Dispatcher(dbConnection);
     }
 
     public void start() {
