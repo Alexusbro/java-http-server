@@ -2,6 +2,7 @@ package ru.otus.java.basic.httpserver;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +27,7 @@ public class HttpRequest {
     }
 
     public String getBody() {
-        return Arrays.toString(body);
+        return body == null ? null : new String(body, StandardCharsets.UTF_8);
     }
 
     public String getRoutingUri() {
