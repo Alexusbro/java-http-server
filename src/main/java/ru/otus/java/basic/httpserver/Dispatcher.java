@@ -1,7 +1,6 @@
 package ru.otus.java.basic.httpserver;
 
 import ru.otus.java.basic.httpserver.Exeption.ResourceNotFoundException;
-import ru.otus.java.basic.httpserver.app.ItemsService;
 import ru.otus.java.basic.httpserver.db.DatabaseConnection;
 import ru.otus.java.basic.httpserver.processors.*;
 import ru.otus.java.basic.httpserver.repository.BookRepository;
@@ -20,15 +19,10 @@ public class Dispatcher {
 
     public Dispatcher(DatabaseConnection dbConnection) {
         this.dbConnection = dbConnection;
-        ItemsService itemsService = new ItemsService();
         BookRepository bookRepository = new BookRepository(dbConnection);
 
         this.processors = new HashMap<>();
         this.defaultStaticRequestProcessor = new DefaultStaticResourceProcessor();
-        this.processors.put("GET /calculate", new CalculatorRequestProcessor());
-        this.processors.put("GET /hello", new HelloRequestProcessor());
-        this.processors.put("GET /item", new GetItemsRequestProcessor(itemsService));
-        this.processors.put("POST /item", new CreateItemsRequestProcessor(itemsService));
         this.processors.put("GET /books", new GetBooksRequestProcessor(bookRepository));
         this.processors.put("GET /book", new FindBookRequestProcessor(bookRepository));
         this.processors.put("POST /book", new CreateBookRequestProcessor(bookRepository));
@@ -51,8 +45,8 @@ public class Dispatcher {
 
         RequestProcessor processor = processors.get(request.getRoutingUri());
         if (processor != null) {
-           processor.execute(request, output);
-           return;
+            processor.execute(request, output);
+            return;
         }
         throw new ResourceNotFoundException("resource not found " + request.getUri());
     }
