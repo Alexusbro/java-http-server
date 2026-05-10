@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 public class FindBookRequestProcessor implements RequestProcessor {
-    private BookRepository bookRepository;
+    private final BookRepository bookRepository;
 
     public FindBookRequestProcessor(BookRepository bookRepository) {
         this.bookRepository = bookRepository;

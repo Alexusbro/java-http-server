@@ -25,17 +25,17 @@ public class PropertiesDb {
         return dbPassword;
     }
 
-    Properties properties = new Properties();
-
-    public void setProperties() {
-        try(FileInputStream fileInput = new FileInputStream("db.properties")) {
+    public PropertiesDb() {
+        try (FileInputStream fileInput = new FileInputStream("db.properties")) {
+            Properties properties = new Properties();
             properties.load(fileInput);
-            dbUrl = properties.getProperty("db.url");
-            dbUser = properties.getProperty("db.user");
-            dbPassword = properties.getProperty("db.password");
+            this.dbUrl = properties.getProperty("db.url");
+            this.dbUser = properties.getProperty("db.user");
+            this.dbPassword = properties.getProperty("db.password");
             logger.info("configuration for database successful load");
         } catch (IOException e) {
             logger.warn("failed to load configuration database");
-        };
+        }
+
     }
 }

@@ -5,11 +5,12 @@ public enum HttpStatus {
     CREATED(201, "Created"),
     BAD_REQUEST(400, "Bad Request"),
     NOT_FOUND(404, "Not Found"),
+    METHOD_NOT_ALLOWED(405, "Method Not Allowed"),
     INTERNAL_SERVER_ERROR(500, "Internal Server Error"),
     PAYLOAD_TOO_LARGE(413, "Payload Too Large");
 
-    private int code;
-    private String message;
+    private final int code;
+    private final String message;
 
     public int getCode() {
         return code;

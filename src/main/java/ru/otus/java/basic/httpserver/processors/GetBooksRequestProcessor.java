@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 public class GetBooksRequestProcessor implements RequestProcessor{
-    private BookRepository bookRepository;
+    private final BookRepository bookRepository;
 
     public GetBooksRequestProcessor(BookRepository bookRepository) {
         this.bookRepository = bookRepository;

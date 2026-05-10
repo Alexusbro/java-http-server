@@ -1,4 +1,4 @@
-package ru.otus.java.basic.httpserver.Exeption;
+package ru.otus.java.basic.httpserver.exception;
 
 import java.io.IOException;
 

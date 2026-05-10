@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 public class DeleteBookRequestProcessor implements RequestProcessor {
-    private BookRepository bookRepository;
+    private final BookRepository bookRepository;
 
     public DeleteBookRequestProcessor(BookRepository bookRepository) {
         this.bookRepository = bookRepository;

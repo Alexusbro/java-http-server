@@ -3,8 +3,9 @@ package ru.otus.java.basic.httpserver;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.otus.java.basic.httpserver.Exeption.PayloadTooLargeException;
-import ru.otus.java.basic.httpserver.Exeption.ResourceNotFoundException;
+import ru.otus.java.basic.httpserver.exception.MethodNotAllowedException;
+import ru.otus.java.basic.httpserver.exception.PayloadTooLargeException;
+import ru.otus.java.basic.httpserver.exception.ResourceNotFoundException;
 import ru.otus.java.basic.httpserver.db.DatabaseConnection;
 import ru.otus.java.basic.httpserver.db.PropertiesDb;
 
@@ -21,36 +22,29 @@ import java.util.concurrent.Executors;
 
 public class HttpServer {
     private static final Logger logger = LogManager.getLogger(HttpServer.class.getName());
-    private int port;
-    private String host;
-    private int threadPoolSize;
-    private Dispatcher dispatcher;
-    private PropertiesServer propertiesServer;
-    private PropertiesDb propertiesDb;
-    private String dbUrl;
-    private String dbUser;
-    private String dbPassword;
-    private DatabaseConnection dbConnection;
+    private final PropertiesServer propertiesServer;
+    private final int port;
+    private final String host;
+    private final Dispatcher dispatcher;
 
-    ExecutorService threadPools;
+    private final ExecutorService threadPools;
 
     public HttpServer() {
         propertiesServer = new PropertiesServer();
         propertiesServer.setProperties();
-        propertiesDb = new PropertiesDb();
-        propertiesDb.setProperties();
+        PropertiesDb propertiesDb = new PropertiesDb();
         this.port = Integer.parseInt(propertiesServer.getPort());
         this.host = propertiesServer.getHost();
-        this.threadPoolSize = Integer.parseInt(propertiesServer.getThreadPoolSize());
-        this.dbUrl = propertiesDb.getDbUrl();
-        this.dbUser = propertiesDb.getDbUser();
-        this.dbPassword = propertiesDb.getDbPassword();
-        dbConnection = new DatabaseConnection(dbUrl, dbUser, dbPassword);
+        int threadPoolSize = Integer.parseInt(propertiesServer.getThreadPoolSize());
+        String dbUrl = propertiesDb.getDbUrl();
+        String dbUser = propertiesDb.getDbUser();
+        String dbPassword = propertiesDb.getDbPassword();
+        DatabaseConnection dbConnection = new DatabaseConnection(dbUrl, dbUser, dbPassword);
         this.dispatcher = new Dispatcher(dbConnection);
+        threadPools = Executors.newFixedThreadPool(threadPoolSize);
     }
 
     public void start() {
-        threadPools = Executors.newFixedThreadPool(threadPoolSize);
         try (ServerSocket serverSocket = new ServerSocket(port, 50, InetAddress.getByName(host))) {
             logger.log(Level.INFO, "server started");
             while (true) {
@@ -68,6 +62,8 @@ public class HttpServer {
                                 logger.warn("request size is too large, " + Thread.currentThread(), e);
                             } catch (ResourceNotFoundException e) {
                                 sendError(socket.getOutputStream(), HttpStatus.NOT_FOUND, "error404.html");
+                            } catch (MethodNotAllowedException e) {
+                                sendError(socket.getOutputStream(), HttpStatus.METHOD_NOT_ALLOWED, "error405.html");
                             } catch (Exception e) {
                                 sendError(socket.getOutputStream(), HttpStatus.INTERNAL_SERVER_ERROR, "error500.html");
                                 logger.error("error processing request " + Thread.currentThread(), e);

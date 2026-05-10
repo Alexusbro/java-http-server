@@ -3,13 +3,11 @@ package ru.otus.java.basic.httpserver;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.otus.java.basic.httpserver.Exeption.PayloadTooLargeException;
+import ru.otus.java.basic.httpserver.exception.PayloadTooLargeException;
 
 public class HttpRequest {
     private HttpMethod method;
@@ -17,10 +15,10 @@ public class HttpRequest {
     private Map<String, String> params;
     private Map<String, String> headers;
     private byte[] body;
-    private InputStream inputStream;
-    private PropertiesServer propertiesServer;
-    private int maxRequestSize;
-    private static Logger logger = LogManager.getLogger(HttpRequest.class.getName());
+    private final InputStream inputStream;
+
+    private final int maxRequestSize;
+    private final static Logger logger = LogManager.getLogger(HttpRequest.class.getName());
 
     public String getUri() {
         return uri;
@@ -44,24 +42,23 @@ public class HttpRequest {
 
     public HttpRequest(InputStream inputStream, PropertiesServer propertiesServer) throws IOException {
         this.inputStream = inputStream;
-        this.propertiesServer = propertiesServer;
         maxRequestSize = Integer.parseInt(propertiesServer.getMaxRequestSize());
         this.parse();
     }
 
     public void info(boolean showRawRequest) {
         if (showRawRequest) {
-            System.out.println("Method: " + method);
-            System.out.println("URI: " + uri);
-            System.out.println("Parameters: " + params);
-            System.out.println("Body: " + body);
+            logger.info("Method: {}", method);
+            logger.info("URI: {}", uri);
+            logger.info("Parameters: {}", params);
+            logger.info("Body: {}", body);
             if (body != null) {
-                System.out.println("Content-length: " + getHeader("content-length"));
+                logger.info("Content-length: {}", getHeader("content-length"));
             }
         }
     }
 
-    private String readHeder(InputStream input) throws IOException {
+    private String stringReader(InputStream input) throws IOException {
         StringBuilder sb = new StringBuilder();
         int b;
         while ((b = input.read()) != -1) {
@@ -75,7 +72,7 @@ public class HttpRequest {
     }
 
     private void parse() throws IOException {
-        String header = readHeder(inputStream);
+        String header = stringReader(inputStream);
         if (header.isBlank()) {
             logger.warn("uncorrected header");
             throw new IOException("uncorrected header");
@@ -94,7 +91,7 @@ public class HttpRequest {
             }
         }
         headers = new HashMap<>();
-        while (!(header = readHeder(inputStream)).isBlank()) {
+        while (!(header = stringReader(inputStream)).isBlank()) {
             String[] headArr = header.split(": ", 2);
             headers.put(headArr[0].toLowerCase(), headArr[1].trim());
         }

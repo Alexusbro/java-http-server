@@ -11,7 +11,6 @@ import java.sql.Statement;
 public class DatabaseConnection {
     private static final Logger logger = LogManager.getLogger(DatabaseConnection.class.getName());
     private Connection connection;
-    private Statement stmt;
 
     public Connection getConnection() {
         return connection;
@@ -25,21 +24,20 @@ public class DatabaseConnection {
     private void connect(String url, String user, String password) {
         try {
             connection = DriverManager.getConnection(url, user, password);
-            stmt = connection.createStatement();
         } catch (SQLException e) {
-            logger.warn("failed connection database" + e);
+            logger.warn("failed connection database{}", String.valueOf(e));
         }
     }
 
     private void createTable() {
-        try {
+        try (Statement stmt = connection.createStatement()) {
             stmt.executeUpdate("create table if not exists book_catalog (" +
                     "id bigserial primary key," +
                     "author varchar(255)," +
                     "title varchar(255)" +
                     ")");
         } catch (SQLException e) {
-            logger.warn("failed create database" + e);
+            logger.warn("failed create database{}", String.valueOf(e));
         }
     }
 

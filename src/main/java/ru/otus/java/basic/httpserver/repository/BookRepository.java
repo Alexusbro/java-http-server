@@ -8,11 +8,11 @@ import ru.otus.java.basic.httpserver.model.Book;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class BookRepository {
-    private DatabaseConnection dbConnection;
+    private final DatabaseConnection dbConnection;
     private static final Logger logger = LogManager.getLogger(BookRepository.class.getName());
 
     public BookRepository(DatabaseConnection dbConnection) {
@@ -20,7 +20,7 @@ public class BookRepository {
     }
 
     public List<Book> findAllBook() {
-        List<Book> books = new CopyOnWriteArrayList<>();
+        List<Book> books = new ArrayList<>();
         String sql = "SELECT * FROM book_catalog";
         try (PreparedStatement pstmt = dbConnection.getConnection().prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
@@ -73,7 +73,7 @@ public class BookRepository {
             pstmt.setLong(1, id);
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            logger.warn("error insert book by id {} into DB: {}", id, e.getMessage());
+            logger.warn("error delete book by id {} into DB: {}", id, e.getMessage());
         }
     }
 

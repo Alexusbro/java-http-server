@@ -15,7 +15,7 @@ public class PropertiesServer {
     private String threadPoolSize;
     private String maxRequestSize;
 
-    Properties properties = new Properties();
+    private final Properties properties = new Properties();
 
     public void setProperties() {
 

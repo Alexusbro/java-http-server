@@ -1,7 +1,6 @@
 package ru.otus.java.basic.httpserver.processors;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
 import ru.otus.java.basic.httpserver.HttpRequest;
 import ru.otus.java.basic.httpserver.HttpResponse;
@@ -13,7 +12,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 public class UpdateBookRequestProcessor implements RequestProcessor {
-    private BookRepository bookRepository;
+    private final BookRepository bookRepository;
 
     public UpdateBookRequestProcessor(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
